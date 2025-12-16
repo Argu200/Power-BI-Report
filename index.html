@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dept KPI Dashboard</title>
+
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <!-- Power BI Client -->
+  <script src="https://powerbi.magna.global/ScriptsForUsage/powerbi.min.js"></script>
+
+  <!-- ES6 Promise Polyfill -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.1.1/es6-promise.auto.min.js"></script>
+</head>
+
+<body>
+
+  <div id="reportContainer" style="width:100%; height:900px;"></div>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+
+      $.get(
+        "http://mitwebsrv.magna.global/powerbi/EmbedReport" +
+        "?groupid=e7bcd77e-ced1-4dc1-ab1c-5a723be2b0e7" +
+        "&reportid=b19c5af9-443f-4898-adb6-e0b981b54fa2",
+        function (data) {
+
+          var accessToken = data.EmbedToken.Token;
+          var embedUrl = data.EmbedUrl;
+          var embedReportId = data.Id;
+
+          var models = window['powerbi-client'].models;
+
+          var config = {
+            type: 'report',
+            tokenType: models.TokenType.Embed,
+            accessToken: accessToken,
+            embedUrl: embedUrl,
+            id: embedReportId,
+            permissions: models.Permissions.All,
+            settings: {
+              bars: {
+                actionBar: {
+                  visible: false
+                }
+              }
+            }
+          };
+
+          var reportContainer = document.getElementById("reportContainer");
+          powerbi.embed(reportContainer, config);
+        }
+      );
+
+    });
+  </script>
+
+</body>
+</html>
